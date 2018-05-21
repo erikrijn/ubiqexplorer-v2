@@ -1,0 +1,22 @@
+<template>
+    <div>
+        <div class="top-cta">
+            <ul>
+                <li>
+                    <i>Latest block:</i><span v-if="headerData != null">{{ headerData.latestBlockNumber }}</span><span v-else>...</span>
+                </li>
+                <li>
+                    <i>Avg. block time:</i><span v-if="headerData != null">{{ headerData.averageBlockTime }}s</span><span v-else>...</span>
+                </li>
+                <li>
+                    <i>Price:</i><span v-if="headerData != null">${{ formatCurrency(headerData.price) }}</span><span v-else>...</span>
+                </li>
+                <li>
+                    <i>Market cap:</i><span v-if="headerData != null">${{ formatCurrency(headerData.marketCap) }}</span><span v-else>...</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</template>
+
+<script src="./headerdata.ts"></script>

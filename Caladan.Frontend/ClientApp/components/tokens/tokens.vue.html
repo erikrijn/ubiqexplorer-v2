@@ -1,0 +1,87 @@
+<template>
+    <div>
+        <section class="breadcramb-content breadcramb-v2 pt25 pb25 parallax-bg color-overlay" style="background-image:url(img/footer-bg.jpg)">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h3>TOKENS</h3>
+                    </div>
+                    <div class="col-sm-6">
+                        <ul>
+                            <li><a href="/">Home</a></li>
+                            <li>Tokens</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section-padding gray-bg">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="section-title text-center mb30">
+                            <h2>Tokens</h2>
+                            <p>This page displays a list of known tokens on the Ubiq network.</p>
+                            <p>Have you published a token on the Ubiq network and would you like to see it listed here? Then please contact us.</p>
+                            <p>If your token meets the ERC20 requirements, we'll also be happy to show the balance of your token on account pages.</p>
+                            <div class="section-divider divider-traingle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section-padding white-bg">
+            <div class="container" v-if="tokens.length">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card card-borderless">
+                            <div class="tab-content">
+                                <div class="row">
+                                    <div class="col-12 col-lg-12">
+                                        <table v-if="tokens.length" class="table table-striped">
+                                            <thead class="thead-dark">
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Name</th>
+                                                    <th>Symbol</th>
+                                                    <th class="visible-lg">Address</th>
+                                                    <th>Standard</th>
+                                                    <th>Website</th>
+                                                    <th>Current price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="item in tokens">
+                                                    <td style="padding-left:10px; padding-top:2px!important;padding-bottom:0px!important;"><span v-if="item.logo != null"><img v-bind:src="item.logo" v-bind:title="item.name" /></span></td>
+                                                    <td>{{ item.name }}</td>
+                                                    <td>{{ item.symbol }}</td>
+                                                    <td class="visible-lg"><router-link :to="{ name: 'account', params: { address: item.address }}">{{ item.address }}</router-link></td>
+                                                    <td>{{ item.standard }}</td>
+                                                    <td><span v-if="item.website != null"><a v-bind:href="item.website" target="_blank">Click here</a></span></td>
+                                                    <td><span v-if="item.price > 0">${{ formatCurrency(item.price) }}</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="loading-content" v-else>
+                <section class="section-padding white-bg">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-12 text-center">
+                                <h3>Loading...</h3>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </section>
+    </div>
+</template>
+
+<script src="./tokens.ts"></script>

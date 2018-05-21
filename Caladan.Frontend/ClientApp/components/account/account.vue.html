@@ -1,0 +1,193 @@
+<template>
+    <div>
+        <section class="breadcramb-content breadcramb-v2 pt25 pb25 parallax-bg color-overlay" style="background-image:url(img/footer-bg.jpg)">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h3>ACCOUNT</h3>
+                    </div>
+                    <div class="col-sm-6">
+                        <ul>
+                            <li><a href="/">Home</a></li>
+                            <li>Account</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div v-if="account != null">
+            <section class="section-padding white-bg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="section-title text-center mb30">
+                                <h4>{{ account.address }}</h4>
+                                <div class="section-divider divider-traingle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="section-padding gray-bg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-8 col-sm-8">
+                            <div class="featured-box white-bg">
+                                <h4>Account details</h4>
+                                <hr />
+                                <dl>
+                                    <dt>Address:</dt>
+                                    <dd>{{ account.address }}</dd>
+                                    <dt>Transactions:</dt>
+                                    <dd>{{ account.numberOfTransactions }}</dd>
+                                </dl>
+                                <hr />
+                                <dl>
+                                    <dt>Balance:</dt>
+                                    <dd>{{ account.balance }} UBQ</dd>
+                                </dl>
+                                <hr />
+                                <dl>
+                                    <dt>Balance (BTC):</dt>
+                                    <dd>{{ account.balanceBtc }}</dd>
+                                    <dt>Balance (USD):</dt>
+                                    <dd>${{ formatCurrency(account.balanceUsd) }}</dd>
+                                    <dt>Balance (EUR):</dt>
+                                    <dd>&euro;{{ formatCurrency(account.balanceEur) }}</dd>
+                                </dl>
+                                <hr />
+                                <p><strong>Export transactions</strong></p>
+                                <a :href="/exporttransactions/ + account.address" class="waves-effect waves-light btn-large export-btn">CSV Export</a>
+                                <a :href="/exporttransactionswithtokens/ + account.address" class="waves-effect waves-light btn-large export-btn">CSV Export (with tokens)</a>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="featured-box white-bg">
+                                <h4>Token balance</h4>
+                                <hr />
+                                <div v-if="account.tokens.length">
+                                    <div class="row" v-for="item in account.tokens">
+                                        <div class="col-sm-4 tokenBalance">
+                                            <span v-if="item.logo != null"><img v-bind:src="item.logo" v-bind:title="item.name" /></span> <span v-else>{{ item.name }}</span>
+                                        </div>
+                                        <div class="col-sm-8 tokenBalance" v-if="item.logo != null" style="padding-top:3px;">
+                                            {{ item.balance }} {{ item.symbol }}
+                                        </div>
+                                        <div class="col-sm-8 tokenBalance" v-else>
+                                            {{ item.balance }} {{ item.symbol }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div v-else>
+                                    <p>No token balance found</p>
+                                </div>
+                            </div>
+
+                            <div class="featured-box white-bg">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <img class="identicon" v-bind:src="account.identicon" v-bind:title="account.address" />
+                                    </div>
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="section-padding white-bg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-lg-12">
+                            <div class="cart-price">
+                                <div class="col-md-4 col-sm-4">
+                                    <h3>Transactions</h3>
+                                </div>
+                                <div class="col-md-8 col-sm-8">
+                                    <button class="paging-btn pull-right float-sm-none" v-on:click="nextPage">Next &raquo;</button>
+                                    <button class="paging-btn pull-right float-sm-none" v-on:click="previousPage">&laquo; Previous</button>
+                                </div>
+                                <table v-if="transactions.length" class="table table-striped">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th></th>
+                                            <th>Details</th>
+                                            <th class="visible-lg">Sender / Receiver</th>
+                                            <th class="visible-md visible-lg">Date (UTC)</th>
+                                            <th class="text-right">Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="item in transactions" class="">
+                                            <td>
+                                                <span v-if="item.from == account.address" class="tx-out">Out</span>
+                                                <span v-else class="tx-in">In</span>
+                                            </td>
+                                            <td>
+                                                <span v-if="item.originalTransactionHash == null"><router-link class="gridlink" :to="{ name: 'transaction', params: { transactionHash: item.transactionHash }}">{{ subStr(item.transactionHash,20) }}</router-link></span>
+                                                <span v-else><router-link class="gridlink" :to="{ name: 'transaction', params: { transactionHash: item.originalTransactionHash }}">{{ subStr(item.originalTransactionHash,20) }}</router-link></span>
+                                            </td>
+                                            <td class="visible-lg">
+                                                <span v-if="item.from == account.address"><a onclick="return false" v-on:click="navigate(item.to)" class="gridlink" :href="/account/ + item.to">{{ item.to }}</a></span>
+                                                <span v-else><a class="gridlink" onclick="return false" v-on:click="navigate(item.from)" :href="/account/ + item.from">{{ item.from }}</a></span>
+                                            </td>
+                                            <td class="visible-md visible-lg">{{ item.confirmedOnFormatted }}</td>
+                                            <td class="text-right">
+                                                <span v-if="item.from == account.address"><span style="color:#f4516c;"><strong>-{{ item.value }}</strong></span> {{ item.symbol }}</span>
+                                                <span v-else><span style="color:#0CA579;"><strong>{{ item.value }}</strong></span> {{ item.symbol }}</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section v-if="account.blocks.length" class="section-padding white-bg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-lg-12">
+                            <div class="cart-price">
+                                <div class="col-md-4 col-sm-4">
+                                    <h3>Last 200 mined blocks</h3>
+                                </div>
+                                <table v-if="account.blocks.length" class="table table-striped">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th>Number</th>
+                                            <th class="visible-lg">Hash</th>
+                                            <th class="visible-lg">Miner</th>
+                                            <th class="text-right">Transactions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="item in account.blocks">
+                                            <td><router-link :to="{ name: 'block', params: { blockNumber: item.blockNumber }}">{{ item.blockNumber }}</router-link></td>
+                                            <td class="visible-lg">{{ item.hash }}</td>
+                                            <td class="visible-lg"><router-link :to="{ name: 'account', params: { address: item.miner }}">{{ item.miner }}</router-link></td>
+                                            <td class="text-right">{{ item.numberOfTransactions }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="loading-content" v-else>
+            <section class="section-padding white-bg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <h3>Loading...</h3>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</template>
+
+<script src="./account.ts"></script>

@@ -1,0 +1,95 @@
+<template>
+    <div>
+        <div class="top-search" style="display: block;">
+            <div class="container">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                    <input v-on:keyup.enter="submit" type="text" class="form-control" placeholder="Block number, tx hash, address...">
+                    <span class="input-group-addon close-search"><i class="fa fa-times"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="attr-nav">
+                <ul>
+                    <li class="search-icon">
+                        <a href="#"><i class="fa fa-search"></i></a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand" href="/"><img src="img/logo.png" class="logo" alt=""></a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="navbar-menu">
+                <ul class="nav navbar-nav navbar-right" data-in="fadeInUp" data-out="fadeOutDown">
+                    <li>
+                        <router-link to="/" :exact="true">
+                            Home
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link to="/blocks">
+                            Blocks
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link to="/transactions">
+                            Transactions
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link to="/pendingtransactions">
+                            Pending Transactions
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link to="/tokens">
+                            Tokens
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link to="/miningpools">
+                            Mining Pools
+                        </router-link>
+                    </li>
+                    <li>
+                        <a href="/swagger" target="_blank">API</a>
+                    </li>
+                    <!--<li>
+        <router-link to="/accounts">
+            Accounts
+        </router-link>
+    </li>
+    <li>
+        <router-link to="/network">
+            Network Stats
+        </router-link>
+    </li>
+    <li>
+        <router-link to="/miners">
+            Miners
+        </router-link>
+    </li>-->
+                </ul>
+            </div>
+        </div>
+
+        <div class="side">
+            <a href="#" class="close-side"><i class="fa fa-times"></i></a>
+            <div class="widget">
+                <h6 class="title">Custom Pages</h6>
+                <ul class="link">
+                    <li><a href="/">Home</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</template>
+
+<style src="./navmenu.css"></style>
+<script src="./navmenu.ts"></script>

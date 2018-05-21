@@ -1,0 +1,183 @@
+<template>
+    <div>
+        <section class="breadcramb-content breadcramb-v2 pt25 pb25 parallax-bg color-overlay" style="background-image:url(img/footer-bg.jpg)">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-9">
+                        <h3 v-if="transaction == null">LOADING...</h3>
+                        <h3 v-else-if="transaction.blockNumber == 0">PENDING TRANSACTION</h3>
+                        <h3 v-else>CONFIRMED TRANSACTION</h3>
+                    </div>
+                    <div class="col-sm-3">
+                        <ul>
+                            <li><a href="/">Home</a></li>
+                            <li>Transaction</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="loading-content" v-if="transaction == null">
+            <section class="section-padding white-bg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <h3>Loading...</h3>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div v-else-if="transaction.found == true">
+            <section class="section-padding white-bg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="section-title text-center mb30">
+                                <h4>{{ transaction.transactionHash }}</h4>
+                                <p v-if="transaction.blockNumber == 0">The transaction is still pending in the network.</p>
+                                <p v-if="transaction.blockNumber == 0">This page will update itself once the transaction gets confirmed.</p>
+                                <div class="section-divider divider-traingle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="section-padding gray-bg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-8 col-sm-9">
+                            <div class="featured-box white-bg">
+                                <h4>Transaction details</h4>
+                                <hr />
+                                <dl>
+                                    <dt>Hash:</dt>
+                                    <dd>{{ transaction.transactionHash }}</dd>
+
+                                    <dt v-if="transaction.blockNumber > 0">Confirmed (UTC):</dt>
+                                    <dd v-if="transaction.blockNumber > 0">{{ transaction.confirmedOnFormatted }}</dd>
+                                    <dt v-if="transaction.blockNumber > 0">Confirmations:</dt>
+                                    <dd v-if="transaction.blockNumber > 0">{{ transaction.confirmations }} (mined in block <router-link :to="{ name: 'block', params: { blockNumber: transaction.blockNumber }}">{{ transaction.blockNumber }}</router-link>)</dd>
+                                    <dt v-if="transaction.blockNumber == 0">Status:</dt>
+                                    <dd v-if="transaction.blockNumber == 0">
+                                        <div class="col-md-2 blockPending"><img src="/img/loader.gif" /></div><div class="col-md-6"> Pending...</div>
+                                    </dd>
+                                </dl>
+                                <hr />
+                                <dl>
+                                    <dt>From:</dt>
+                                    <dd><router-link :to="{ name: 'account', params: { address: transaction.from }}">{{ transaction.from }}</router-link></dd>
+                                    <dt>To:</dt>
+                                    <dd><router-link :to="{ name: 'account', params: { address: transaction.to }}">{{ transaction.to }}</router-link></dd>
+                                </dl>
+                                <hr />
+                                <dl>
+                                    <dt>Value:</dt>
+                                    <dd>{{ transaction.value }} {{ transaction.symbol }}</dd>
+                                    <dt v-if="transaction.priceBtc > 0">Value (BTC):</dt>
+                                    <dd v-if="transaction.priceBtc > 0">{{ transaction.priceBtc * transaction.value}}</dd>
+                                    <dt v-if="transaction.priceUsd > 0">Value (USD):</dt>
+                                    <dd v-if="transaction.priceUsd > 0">{{ formatCurrency(transaction.priceUsd * transaction.value) }}</dd>
+                                    <dt v-if="transaction.priceEur > 0">Value (EUR):</dt>
+                                    <dd v-if="transaction.priceEur > 0">{{ formatCurrency(transaction.priceEur * transaction.value) }}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-3">
+                            <div class="featured-box white-bg">
+                                <h4>Gas</h4>
+                                <hr />
+                                <dl>
+                                    <dt>Gas limit:</dt>
+                                    <dd>{{ transaction.gas }}</dd>
+                                    <dt>Gas used:</dt>
+                                    <dd>{{ transaction.gasUsed }}</dd>
+                                    <dt>Gas price:</dt>
+                                    <dd>{{ transaction.gasPrice }} gwei</dd>
+                                    <dt>Transaction fee:</dt>
+                                    <dd>{{ transaction.fee }} UBQ</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section-padding white-bg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="contact-info-box">
+                                <div class="col-sm-12">
+                                    <h4>Technical details</h4>
+                                    <div class="tabsContainer">
+                                        <ul class="nav nav-tabs nav-justified">
+                                            <li class="nav-item active">
+                                                <a class="nav-link" data-toggle="tab" href="#panel1" role="tab">Details</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" data-toggle="tab" href="#panel2" role="tab">Receipt</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" data-toggle="tab" href="#panel3" role="tab">Raw data</a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content card">
+                                            <div class="tab-pane fade active in" id="panel1" role="tabpanel">
+                                                <dl>
+                                                    <dt>Transaction hash:</dt>
+                                                    <dd>{{ transaction.transactionHash }}</dd>
+                                                    <dt>Included in Block:</dt>
+                                                    <dd><router-link :to="{ name: 'block', params: { blockNumber: transaction.blockNumber }}">{{ transaction.blockNumber }}</router-link></dd>
+                                                    <dt>Transaction index:</dt>
+                                                    <dd>{{ transaction.transactionIndex }}</dd>
+                                                    <dt>Block hash:</dt>
+                                                    <dd>{{ transaction.blockHash }}</dd>
+                                                    <dt>Nonce:</dt>
+                                                    <dd>{{ transaction.nonce }}</dd>
+                                                    <dt>Timestamp:</dt>
+                                                    <dd>{{ transaction.timestamp }}</dd>
+                                                    <dt>Confirmed (UTC):</dt>
+                                                    <dd>{{ transaction.confirmedOnFormatted }}</dd>
+                                                </dl>
+                                                <dl>
+                                                    <dt>Input:</dt>
+                                                    <dd><pre><code>{{ transaction.input }}</code></pre></dd>
+                                                </dl>
+                                            </div>
+                                            <div class="tab-pane fade" id="panel2" role="tabpanel">
+                                                <h4>Transaction receipt</h4>
+                                                <pre><code>{{ transaction.receiptRaw }}</code></pre>
+                                            </div>
+                                            <div class="tab-pane fade" id="panel3" role="tabpanel">
+                                                <h4>Raw transaction data</h4>
+                                                <pre><code>{{ transaction.raw }}</code></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div v-else>
+            <section class="section-padding white-bg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="section-title text-center mb30">
+                                <h4>Transaction not found</h4>
+                                <div class="section-divider divider-traingle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </div>
+</template>
+
+<script src="./transaction.ts"></script>

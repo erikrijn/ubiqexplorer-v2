@@ -1,0 +1,84 @@
+<template>
+    <div>
+        <section class="breadcramb-content breadcramb-v2 pt25 pb25 parallax-bg color-overlay" style="background-image:url(img/footer-bg.jpg)">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h3>LATEST TRANSACTIONS</h3>
+                    </div>
+                    <div class="col-sm-6">
+                        <ul>
+                            <li><a href="/">Home</a></li>
+                            <li>Latest Transactions</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section-padding gray-bg">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="section-title text-center mb30">
+                            <h2>Latest 50 transactions</h2>
+                            <p>This page displays the latest 50 confirmed transactions in the Ubiq chain.</p>
+                            <div class="section-divider divider-traingle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section-padding white-bg">
+            <div class="container" v-if="transactions.length">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card card-borderless">
+                            <div class="tab-content">
+                                <div class="row">
+                                    <div class="col-12 col-lg-12">
+                                        <table class="table">
+                                            <thead class="thead-dark">
+                                                <tr>
+                                                    <th>Details</th>
+                                                    <th class="visible-lg">From</th>
+                                                    <th class="visible-lg">To</th>
+                                                    <th>Value</th>
+                                                    <th class="visible-md">Date (UTC)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="item in transactions">
+                                                    <td>
+                                                        <span v-if="item.originalTransactionHash == null"><router-link :to="{ name: 'transaction', params: { transactionHash: item.transactionHash }}">{{ subStr(item.transactionHash,20) }}</router-link></span>
+                                                        <span v-else><router-link :to="{ name: 'transaction', params: { transactionHash: item.originalTransactionHash }}">{{ subStr(item.originalTransactionHash,20) }}</router-link></span>
+                                                    </td>
+                                                    <td class="visible-lg"><router-link :to="{ name: 'account', params: { address: item.from }}">{{ subStr(item.from,20) }}</router-link></td>
+                                                    <td class="visible-lg"><router-link :to="{ name: 'account', params: { address: item.to }}">{{ subStr(item.to,20) }}</router-link></td>
+                                                    <td>{{ item.value }} {{ item.symbol }}</td>
+                                                    <td class="visible-md">{{ item.confirmedOnFormatted }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="loading-content" v-else>
+                <section class="section-padding white-bg">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-12 text-center">
+                                <h3>Loading...</h3>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </section>
+    </div>
+</template>
+
+<script src="./latesttransactions.ts"></script>

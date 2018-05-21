@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Ubiq block explorer">
+    <meta name="keywords" content="Ubiq">
+    <meta name="author" content="Erik van Rijn">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    @*<meta name="viewport" content="width=720">*@
+    <title>ubiqexplorer.com</title>
+    <base href="~/" />
+    <link rel="shortcut icon" href="/favicon.png" />
+    <link rel="stylesheet" href="~/dist/vendor.css" asp-append-version="true" />
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/dist/site.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/dist/bootnav.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/dist/font-awesome.css" asp-append-version="true" />
+    </environment>
+</head>
+<body>
+    @RenderBody()
+    <footer id="footer" class="pt57" style="background-image:url(img/footer-bg.jpg)">
+        <div class="container">
+            <div class="row">
+                <div class="footer-wrap clearfix">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="footer-col">
+                            <div class="footer-logo text-center">
+                                <img src="img/logo-in-dark.png" class="img-responsive" alt="Logo">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="footer-col">
+                            <h6>Ubiq</h6>
+                            <p> Smart contracts for an automated world.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="footer-col">
+                            <h6>Pages</h6>
+                            <ul>
+                                <li><a href="/tokens">Tokens</a></li>
+                                <li><a href="/blocks">Latest Blocks</a></li>
+                                <li><a href="/transactions">Latest Transactions</a></li>
+                                <li><a href="/miningpools">Mining Pools</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="footer-col">
+                            <h6>Contact us</h6>
+                            <p><a href="https://twitter.com/ubiqsmart">Twitter</a><br><a href="https://discord.gg/HF6vEGF">Discord</a><br>info@ubiqexplorer.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="footer-copyright text-center">
+                    <p>backend: c# dotnet core - frontend: vue.js - hosting: azure</p>
+                    <p>Help us cover hosting fees? Donation address: <a href="/account/0xD3D870C24EeC0b3a5Ecd011C80fe423cCce15c87">0xD3D870C24EeC0b3a5Ecd011C80fe423cCce15c87</a> </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="~/dist/vendor.js" asp-append-version="true"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    @RenderSection("scripts", required: false)
+    <script>
+        $(document).ready(function () {
+            $("nav.navbar.bootsnav .attr-nav").each(function () {
+                $("li.search-icon > a", this).on("click", function (e) {
+                    e.preventDefault();
+                    $(".top-search").slideToggle();
+                });
+            });
+            $(".input-group-addon.close-search").on("click", function () {
+                $(".top-search").slideUp();
+            });
+        });
+    </script>
+</body>
+</html>
