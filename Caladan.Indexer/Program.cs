@@ -7,6 +7,8 @@ using System.Diagnostics;
 using Caladan.NodeServices;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace Caladan.Indexer
 {
@@ -14,6 +16,11 @@ namespace Caladan.Indexer
     {
         public static async Task Main(string[] args)
         {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            var configuration = builder.Build();
+
             var sw = new Stopwatch();
             sw.Start();
 
@@ -36,7 +43,7 @@ namespace Caladan.Indexer
                 Console.WriteLine($"Getting current the current price for the main currency.");
                 try
                 {
-                    Pricing.PriceService.GetPriceLastAsync("ubiq", "UBQ").Wait();
+                    Pricing.PriceService.GetPriceLastAsync(configuration["AppSettings:MainCurrencyName"].ToLower(), configuration["AppSettings:MainCurrencySymbol"]).Wait();
                 }
                 catch (Exception ex)
                 {

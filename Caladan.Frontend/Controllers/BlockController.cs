@@ -6,6 +6,7 @@ using Caladan.Frontend.Helpers;
 using Caladan.NodeServices.Web3;
 using Caladan.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 
 namespace Caladan.Frontend.Controllers
@@ -14,6 +15,12 @@ namespace Caladan.Frontend.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     public class BlockController : Controller
     {
+        private IConfiguration _configuration;
+        public BlockController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         [HttpGet("[action]")]
         public async Task<IActionResult> Get(ulong blockNumber)
         {
@@ -57,7 +64,7 @@ namespace Caladan.Frontend.Controllers
                         To = x.To,
                         TransactionHash = x.TransactionHash,
                         Value = x.Value.FromHexWei(x.Decimals),
-                        Symbol = string.IsNullOrEmpty(x.Symbol) ? "UBQ" : x.Symbol,
+                        Symbol = string.IsNullOrEmpty(x.Symbol) ? _configuration["AppSettings:MainCurrencySymbol"] : x.Symbol,
                         Timestamp = x.Timestamp,
                         ConfirmedOnFormatted = x.Created.ToString(),
                         OriginalTransactionHash = x.OriginalTransactionHash

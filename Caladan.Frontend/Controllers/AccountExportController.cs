@@ -6,12 +6,19 @@ using System.Threading.Tasks;
 using Caladan.NodeServices.Web3;
 using Caladan.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 
 namespace Caladan.Frontend.Controllers
 {
     public class AccountExportController : Controller
     {
+        private IConfiguration _configuration;
+        public AccountExportController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         [HttpGet]
         public async Task<FileResult> Get(string address, bool includeTokens = false)
         {
@@ -47,7 +54,7 @@ namespace Caladan.Frontend.Controllers
                     csv.SetCell(i, 3, transaction.To.ToLower() == address.ToLower() ? 
                         transaction.Value.FromHexWei(transaction.Decimals).ToString() : 
                         (transaction.Value.FromHexWei(transaction.Decimals) * -1).ToString());
-                    csv.SetCell(i, 4, string.IsNullOrEmpty(transaction.Symbol) ? "UBQ" : transaction.Symbol);
+                    csv.SetCell(i, 4, string.IsNullOrEmpty(transaction.Symbol) ? _configuration["AppSettings:MainCurrencySymbol"] : transaction.Symbol);
                     csv.SetCell(i, 5, transaction.Timestamp.ToString());
                     csv.SetCell(i, 6, transaction.Created.ToString());
 

@@ -35,7 +35,7 @@ namespace Caladan.Frontend.Controllers
             using (var blockRepository = new MongoRepository<Caladan.Models.Block>())
             using (var accountService = new AccountService(_nodeUrls))
             {
-                var getAccount = accountService.GetAccountAsync(address, false, 25, true);
+                var getAccount = accountService.GetAccountAsync(address, _configuration["AppSettings:MainCurrencySymbol"], false, 25, true);
 
                 var builder = Builders<Caladan.Models.Block>.Filter;
                 var filter = builder.Where(x => x.Miner == address.ToLower());
@@ -76,7 +76,7 @@ namespace Caladan.Frontend.Controllers
                         To = x.To,
                         TransactionHash = x.TransactionHash,
                         Value = x.Value.FromHexWei(x.Decimals),
-                        Symbol = string.IsNullOrEmpty(x.Symbol) ? "UBQ" : x.Symbol,
+                        Symbol = string.IsNullOrEmpty(x.Symbol) ? _configuration["AppSettings:MainCurrencySymbol"] : x.Symbol,
                         Timestamp = x.Timestamp,
                         ConfirmedOnFormatted = x.Created.ToString(),
                         OriginalTransactionHash = x.OriginalTransactionHash
@@ -136,7 +136,7 @@ namespace Caladan.Frontend.Controllers
                     To = x.To,
                     TransactionHash = x.TransactionHash,
                     Value = x.Value.FromHexWei(x.Decimals),
-                    Symbol = string.IsNullOrEmpty(x.Symbol) ? "UBQ" : x.Symbol,
+                    Symbol = string.IsNullOrEmpty(x.Symbol) ? _configuration["AppSettings:MainCurrencySymbol"] : x.Symbol,
                     Timestamp = x.Timestamp,
                     ConfirmedOnFormatted = x.Created.ToString(),
                     OriginalTransactionHash = x.OriginalTransactionHash

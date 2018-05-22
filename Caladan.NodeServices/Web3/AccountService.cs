@@ -58,7 +58,7 @@ namespace Caladan.NodeServices.Web3
         /// <param name="includeransactions">if set to <c>true</c> [includeransactions].</param>
         /// <param name="maxNumberOfTransactions">The maximum number of transactions.</param>
         /// <returns></returns>
-        public async Task<Account> GetAccountAsync(string address, bool includeTransactions = true, int maxNumberOfTransactions = 25, bool includePrices = true)
+        public async Task<Account> GetAccountAsync(string address, string defaultSymbol, bool includeTransactions = true, int maxNumberOfTransactions = 25, bool includePrices = true)
         {
             address = address.ToLower();
 
@@ -140,7 +140,7 @@ namespace Caladan.NodeServices.Web3
             {
                 var priceRepository = new MongoRepository<Price>();
                 var priceBuilder = Builders<Price>.Filter;
-                var priceFilter = priceBuilder.Where(x => x.Symbol == "UBQ");
+                var priceFilter = priceBuilder.Where(x => x.Symbol == defaultSymbol);
                 var orderByPrice = Builders<Price>.Sort.Descending("last_updated");
 
                 var lastPrice = await priceRepository.GetAsync(priceFilter, orderByPrice);

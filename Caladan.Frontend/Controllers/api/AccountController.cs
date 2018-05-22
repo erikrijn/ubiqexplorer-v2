@@ -37,7 +37,7 @@ namespace Caladan.Frontend.Controllers.Api
         {
             using (var accountService = new AccountService(_nodeUrls))
             {
-                var account = await accountService.GetAccountAsync(address.ToLower(), includeTop1000Transactions, 1000);
+                var account = await accountService.GetAccountAsync(address.ToLower(), _configuration["AppSettings:MainCurrencySymbol"], includeTop1000Transactions, 1000);
                 if (account == null)
                     return NotFound($"Account {address} could not be found.");
 

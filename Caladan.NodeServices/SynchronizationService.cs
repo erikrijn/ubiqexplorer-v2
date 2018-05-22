@@ -27,6 +27,7 @@ namespace Caladan.NodeServices
         private BlockService _blockService;
         private TransactionService _transactionService;
         private Price _currentPrice;
+        private IConfigurationRoot _configuration;
 
         private int _batchTime = 0;
         private int _batchSize = 128;
@@ -46,6 +47,7 @@ namespace Caladan.NodeServices
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
             var configuration = builder.Build();
+            _configuration = configuration;
 
             var cpuMaxThreadsCfgValue = configuration["MaxIndexingCpuThreads"];
             if (!string.IsNullOrEmpty(cpuMaxThreadsCfgValue))
@@ -98,7 +100,7 @@ namespace Caladan.NodeServices
 
         public async Task SynchronizeNewBlocksAsync(List<BlockSyncRequest> blockSyncRequests)
         {
-            _currentPrice = await _priceRepository.GetAsync(x => x.Symbol == "UBQ", x => x.LastUpdatedTimestamp, true);
+            _currentPrice = await _priceRepository.GetAsync(x => x.Symbol == _configuration["AppSettings:MainCurrencySymbol"], x => x.LastUpdatedTimestamp, true);
             if (_currentPrice != null && _currentPrice.LastUpdated < DateTime.UtcNow.AddHours(-12))
                 _currentPrice = null;
 

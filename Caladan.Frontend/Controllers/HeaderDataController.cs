@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Caladan.Frontend.ViewModels;
 using Caladan.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -14,6 +15,12 @@ namespace Caladan.Frontend.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     public class HeaderDataController : Controller
     {
+        private IConfiguration _configuration;
+        public HeaderDataController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         [HttpGet("[action]")]
         public async Task<IActionResult> Get()
         {
@@ -34,7 +41,7 @@ namespace Caladan.Frontend.Controllers
                 var getOldBlock = blockRepository.GetAsync(filter, orderByBlockAsc);
 
                 var priceBuilder = Builders<Caladan.Models.Price>.Filter;
-                var priceFilter = priceBuilder.Where(x => x.Symbol == "UBQ");
+                var priceFilter = priceBuilder.Where(x => x.Symbol == _configuration["AppSettings:MainCurrencySymbol"]);
                 var orderByPrice = Builders<Caladan.Models.Price>.Sort.Descending("last_updated");
                 var getLastPrice = priceRepository.GetAsync(priceFilter, orderByPrice);
 

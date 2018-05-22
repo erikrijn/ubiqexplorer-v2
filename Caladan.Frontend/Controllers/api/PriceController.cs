@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Caladan.Models;
 using Caladan.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Caladan.Frontend.Controllers.Api
@@ -12,6 +13,12 @@ namespace Caladan.Frontend.Controllers.Api
     [Route("api/[controller]")]
     public class PriceController : Controller
     {
+        private IConfiguration _configuration;
+        public PriceController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         /// <summary>
         /// Gets the latest price.
         /// </summary>
@@ -23,7 +30,7 @@ namespace Caladan.Frontend.Controllers.Api
         {
             using (var priceService = new MongoRepository<Price>())
             {
-                var lastPrice = await priceService.GetAsync(x => x.Symbol == "UBQ", x => x.LastUpdatedTimestamp, true);
+                var lastPrice = await priceService.GetAsync(x => x.Symbol == _configuration["AppSettings:MainCurrencySymbol"], x => x.LastUpdatedTimestamp, true);
                 return Ok(new Models.Api.Price()
                 {
                     AvailableSupply = lastPrice.AvailableSupply,

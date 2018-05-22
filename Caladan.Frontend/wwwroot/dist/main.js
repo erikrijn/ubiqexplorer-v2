@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "aaa37fded62d699866a6"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "35e1d5870223b2a40844"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -4805,7 +4805,7 @@ var Component = __webpack_require__(2)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\Users\\Erik\\source\\repos\\caladan\\Caladan.Frontend\\ClientApp\\components\\account\\account.vue.html"
+Component.options.__file = "C:\\Users\\Erik\\Source\\Repos\\ubiqexplorer-v2\\Caladan.Frontend\\ClientApp\\components\\account\\account.vue.html"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] account.vue.html: functional components are not supported with templates, they should use render functions.")}
 
@@ -4839,7 +4839,7 @@ var Component = __webpack_require__(2)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\Users\\Erik\\source\\repos\\caladan\\Caladan.Frontend\\ClientApp\\components\\app\\app.vue.html"
+Component.options.__file = "C:\\Users\\Erik\\Source\\Repos\\ubiqexplorer-v2\\Caladan.Frontend\\ClientApp\\components\\app\\app.vue.html"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] app.vue.html: functional components are not supported with templates, they should use render functions.")}
 
@@ -4873,7 +4873,7 @@ var Component = __webpack_require__(2)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\Users\\Erik\\source\\repos\\caladan\\Caladan.Frontend\\ClientApp\\components\\block\\block.vue.html"
+Component.options.__file = "C:\\Users\\Erik\\Source\\Repos\\ubiqexplorer-v2\\Caladan.Frontend\\ClientApp\\components\\block\\block.vue.html"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] block.vue.html: functional components are not supported with templates, they should use render functions.")}
 
@@ -4907,7 +4907,7 @@ var Component = __webpack_require__(2)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\Users\\Erik\\source\\repos\\caladan\\Caladan.Frontend\\ClientApp\\components\\headerdata\\headerdata.vue.html"
+Component.options.__file = "C:\\Users\\Erik\\Source\\Repos\\ubiqexplorer-v2\\Caladan.Frontend\\ClientApp\\components\\headerdata\\headerdata.vue.html"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] headerdata.vue.html: functional components are not supported with templates, they should use render functions.")}
 
@@ -4941,7 +4941,7 @@ var Component = __webpack_require__(2)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\Users\\Erik\\source\\repos\\caladan\\Caladan.Frontend\\ClientApp\\components\\home\\home.vue.html"
+Component.options.__file = "C:\\Users\\Erik\\Source\\Repos\\ubiqexplorer-v2\\Caladan.Frontend\\ClientApp\\components\\home\\home.vue.html"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] home.vue.html: functional components are not supported with templates, they should use render functions.")}
 
@@ -4975,7 +4975,7 @@ var Component = __webpack_require__(2)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\Users\\Erik\\source\\repos\\caladan\\Caladan.Frontend\\ClientApp\\components\\latestblocks\\latestblocks.vue.html"
+Component.options.__file = "C:\\Users\\Erik\\Source\\Repos\\ubiqexplorer-v2\\Caladan.Frontend\\ClientApp\\components\\latestblocks\\latestblocks.vue.html"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] latestblocks.vue.html: functional components are not supported with templates, they should use render functions.")}
 
@@ -5009,7 +5009,7 @@ var Component = __webpack_require__(2)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\Users\\Erik\\source\\repos\\caladan\\Caladan.Frontend\\ClientApp\\components\\latesttransactions\\latesttransactions.vue.html"
+Component.options.__file = "C:\\Users\\Erik\\Source\\Repos\\ubiqexplorer-v2\\Caladan.Frontend\\ClientApp\\components\\latesttransactions\\latesttransactions.vue.html"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] latesttransactions.vue.html: functional components are not supported with templates, they should use render functions.")}
 
@@ -5043,7 +5043,7 @@ var Component = __webpack_require__(2)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\Users\\Erik\\source\\repos\\caladan\\Caladan.Frontend\\ClientApp\\components\\miningpools\\miningpools.vue.html"
+Component.options.__file = "C:\\Users\\Erik\\Source\\Repos\\ubiqexplorer-v2\\Caladan.Frontend\\ClientApp\\components\\miningpools\\miningpools.vue.html"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] miningpools.vue.html: functional components are not supported with templates, they should use render functions.")}
 
@@ -5081,7 +5081,7 @@ var Component = __webpack_require__(2)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\Users\\Erik\\source\\repos\\caladan\\Caladan.Frontend\\ClientApp\\components\\navmenu\\navmenu.vue.html"
+Component.options.__file = "C:\\Users\\Erik\\Source\\Repos\\ubiqexplorer-v2\\Caladan.Frontend\\ClientApp\\components\\navmenu\\navmenu.vue.html"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] navmenu.vue.html: functional components are not supported with templates, they should use render functions.")}
 
@@ -5115,7 +5115,7 @@ var Component = __webpack_require__(2)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\Users\\Erik\\source\\repos\\caladan\\Caladan.Frontend\\ClientApp\\components\\pendingtransactions\\pendingtransactions.vue.html"
+Component.options.__file = "C:\\Users\\Erik\\Source\\Repos\\ubiqexplorer-v2\\Caladan.Frontend\\ClientApp\\components\\pendingtransactions\\pendingtransactions.vue.html"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] pendingtransactions.vue.html: functional components are not supported with templates, they should use render functions.")}
 
@@ -5149,7 +5149,7 @@ var Component = __webpack_require__(2)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\Users\\Erik\\source\\repos\\caladan\\Caladan.Frontend\\ClientApp\\components\\tokens\\tokens.vue.html"
+Component.options.__file = "C:\\Users\\Erik\\Source\\Repos\\ubiqexplorer-v2\\Caladan.Frontend\\ClientApp\\components\\tokens\\tokens.vue.html"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] tokens.vue.html: functional components are not supported with templates, they should use render functions.")}
 
@@ -5183,7 +5183,7 @@ var Component = __webpack_require__(2)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\Users\\Erik\\source\\repos\\caladan\\Caladan.Frontend\\ClientApp\\components\\transaction\\transaction.vue.html"
+Component.options.__file = "C:\\Users\\Erik\\Source\\Repos\\ubiqexplorer-v2\\Caladan.Frontend\\ClientApp\\components\\transaction\\transaction.vue.html"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] transaction.vue.html: functional components are not supported with templates, they should use render functions.")}
 

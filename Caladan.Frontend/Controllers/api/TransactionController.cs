@@ -66,7 +66,7 @@ namespace Caladan.Frontend.Controllers.Api
                     TransactionHash = transaction.TransactionHash,
                     TransactionIndex = (ulong)transaction.TransactionIndex,
                     Value = transaction.Value.FromHexWei(transaction.Decimals),
-                    Symbol = string.IsNullOrEmpty(transaction.Symbol) ? "UBQ" : transaction.Symbol,
+                    Symbol = string.IsNullOrEmpty(transaction.Symbol) ? _configuration["AppSettings:MainCurrencySymbol"] : transaction.Symbol,
                     Timestamp = transaction.Timestamp
                 };
 
@@ -79,7 +79,7 @@ namespace Caladan.Frontend.Controllers.Api
         [SwaggerResponse(200, Type = typeof(Models.Api.TransactionList))]
         public async Task<IActionResult> Get(string address, string symbol = null, int? pageNumber = 1, int? pageSize = 1000)
         {
-            if (symbol != null && symbol.ToUpper() == "UBQ")
+            if (symbol != null && symbol.ToUpper() == _configuration["AppSettings:MainCurrencySymbol"])
                 symbol = null;
 
             if (!string.IsNullOrWhiteSpace(symbol))
@@ -113,7 +113,7 @@ namespace Caladan.Frontend.Controllers.Api
                         TransactionHash = transaction.TransactionHash.Replace("tokenreceiver_", ""),
                         TransactionIndex = transaction.TransactionIndex,
                         Value = transaction.Value.FromHexWei(transaction.Decimals),
-                        Symbol = string.IsNullOrEmpty(transaction.Symbol) ? "UBQ" : transaction.Symbol,
+                        Symbol = string.IsNullOrEmpty(transaction.Symbol) ? _configuration["AppSettings:MainCurrencySymbol"] : transaction.Symbol,
                         Timestamp = transaction.Timestamp
                     }).ToArray()
                 };

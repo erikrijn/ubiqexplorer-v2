@@ -139,7 +139,7 @@ namespace Caladan.Frontend.Controllers
                     Value = x.Value.FromHexWei(x.Decimals),
                     ConfirmedOnFormatted = x.Created.ToString(),
                     Found = true,
-                    Symbol = x.Symbol == null ? "UBQ" : x.Symbol
+                    Symbol = x.Symbol == null ? _configuration["AppSettings:MainCurrencySymbol"] : x.Symbol
                 }));
             }
         }
@@ -162,7 +162,7 @@ namespace Caladan.Frontend.Controllers
                     Value = x.Value.FromHexWei(x.Decimals),
                     ConfirmedOnFormatted = x.Created.ToString(),
                     Found = true,
-                    Symbol = x.Symbol == null ? "UBQ" : x.Symbol
+                    Symbol = x.Symbol == null ? _configuration["AppSettings:MainCurrencySymbol"] : x.Symbol
                 }));
             }
         }
