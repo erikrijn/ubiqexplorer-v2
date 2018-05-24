@@ -1,12 +1,9 @@
 ﻿using Caladan.Models;
 using Caladan.Repositories;
 using MongoDB.Driver;
-using Nethereum.Contracts.CQS;
-using Nethereum.Web3;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -33,20 +30,20 @@ namespace Caladan.NodeServices.Web3
         }
 
         private Nethereum.Web3.Web3 _web3;
-        private MongoRepository<Transaction> _mongoTransactionService;
-        private MongoRepository<Account> _mongoAccountService;
-        private MongoRepository<AccountRequest> _mongoAccountRequestService;
+        private MongoRepository<Transaction> _transactionRepository;
+        private MongoRepository<Account> _accountRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountService"/> class.
         /// </summary>
-        public AccountService(List<string> nodes)
+        public AccountService(List<string> nodes, 
+            MongoRepository<Transaction> transactionRepository,
+            MongoRepository<Account> accountRepository)
         {
             _baseUrls = nodes;
             _web3 = new Nethereum.Web3.Web3(GetNodeUrl());
-            _mongoTransactionService = new MongoRepository<Transaction>();
-            _mongoAccountService = new MongoRepository<Account>();
-            _mongoAccountRequestService = new MongoRepository<AccountRequest>();
+            _transactionRepository = transactionRepository;
+            _accountRepository = accountRepository;
         }
 
 
@@ -64,10 +61,10 @@ namespace Caladan.NodeServices.Web3
 
             var getBalance = GetBalanceFromNodeAsync(address);
 
-            var fromTransactionsQuery = _mongoTransactionService.GetQueryable(x => x.From == address && x.ShowOnAccountPage, x => x.BlockNumber, true);
+            var fromTransactionsQuery = _transactionRepository.GetQueryable(x => x.From == address && x.ShowOnAccountPage, x => x.BlockNumber, true);
             var noOfFromTransactions = fromTransactionsQuery.Count();
 
-            var toTransactionsQuery = _mongoTransactionService.GetQueryable(x => x.To == address && x.ShowOnAccountPage, x => x.BlockNumber, true);
+            var toTransactionsQuery = _transactionRepository.GetQueryable(x => x.To == address && x.ShowOnAccountPage, x => x.BlockNumber, true);
             var noOfToTransactions = toTransactionsQuery.Count();
 
             var noOfTransactions = noOfFromTransactions + noOfToTransactions;
@@ -89,7 +86,7 @@ namespace Caladan.NodeServices.Web3
                 transactions = transactions.OrderByDescending(x => x.BlockNumber).Take(maxNumberOfTransactions).ToList();
             }
 
-            var getAccount = _mongoAccountService.GetAsync(x => x.Address == address);
+            var getAccount = _accountRepository.GetAsync(x => x.Address == address);
             
             #region Get token balances
             var tokenBalances = tokens.Where(x => x.ShowOnAccountPage).Select(x => new TokenBalance()
@@ -152,7 +149,7 @@ namespace Caladan.NodeServices.Web3
                 }
             }
 
-            await _mongoAccountService.SaveAsync(account);
+            await _accountRepository.SaveAsync(account);
 
             return account;
         }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Caladan.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
@@ -25,6 +26,12 @@ namespace Caladan.Frontend
         {
             services.AddMvc();
             services.AddSingleton(Configuration);
+            services.AddSingleton<MongoRepository<Caladan.Models.Transaction>>();
+            services.AddSingleton<MongoRepository<Caladan.Models.Block>>();
+            services.AddSingleton<MongoRepository<Caladan.Models.Price>>();
+            services.AddSingleton<MongoRepository<Caladan.Models.Token>>();
+            services.AddSingleton<MongoRepository<Caladan.Models.TransactionReceipt>>();
+            services.AddSingleton<MongoRepository<Caladan.Models.Account>>();
 
             // Register the Swagger generator, defining one or more Swagger documents
             services.AddSwaggerGen(c =>

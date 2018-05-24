@@ -17,9 +17,16 @@ namespace Caladan.Frontend.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     public class AccountController : Controller
     {
+        private MongoRepository<Caladan.Models.Transaction> _transactionRepository;
+        private MongoRepository<Caladan.Models.Block> _blockRepository;
+        private MongoRepository<Caladan.Models.Account> _accountRepository;
+        
         private IConfiguration _configuration;
         private List<string> _nodeUrls;
-        public AccountController(IConfiguration configuration)
+        public AccountController(IConfiguration configuration,
+            MongoRepository<Caladan.Models.Transaction> transactionRepository,
+            MongoRepository<Caladan.Models.Block> blockRepository,
+            MongoRepository<Caladan.Models.Account> accountRepository)
         {
             _configuration = configuration;
             var nodesCfgValue = configuration["AppSettings:Nodes"];
@@ -27,20 +34,23 @@ namespace Caladan.Frontend.Controllers
                 throw new Exception("Configuration value for 'Nodes' cannot be empty.");
 
             _nodeUrls = nodesCfgValue.Contains(',') ? nodesCfgValue.Split(',').ToList() : new List<string>() { nodesCfgValue };
+
+            _transactionRepository = transactionRepository;
+            _blockRepository = blockRepository;
+            _accountRepository = accountRepository;
         }
 
         [HttpGet("[action]")]
         public async Task<IActionResult> Get(string address, int pageNumber)
         {
-            using (var blockRepository = new MongoRepository<Caladan.Models.Block>())
-            using (var accountService = new AccountService(_nodeUrls))
+            using (var accountService = new AccountService(_nodeUrls, _transactionRepository, _accountRepository))
             {
                 var getAccount = accountService.GetAccountAsync(address, _configuration["AppSettings:MainCurrencySymbol"], false, 25, true);
 
                 var builder = Builders<Caladan.Models.Block>.Filter;
                 var filter = builder.Where(x => x.Miner == address.ToLower());
                 var orderBy = Builders<Caladan.Models.Block>.Sort.Descending("block_number");
-                var getMinedBlocks = blockRepository.FindAsync(filter, orderBy, 200);
+                var getMinedBlocks = _blockRepository.FindAsync(filter, orderBy, 200);
 
                 await Task.WhenAll(getAccount, getMinedBlocks);
 
@@ -119,34 +129,28 @@ namespace Caladan.Frontend.Controllers
         public async Task<IActionResult> GetTransactions(string address, int pageNumber)
         {
             pageNumber = pageNumber == 0 ? 1 : pageNumber;
-            using (var transactionService = new MongoRepository<Caladan.Models.Transaction>())
+            var builder = Builders<Caladan.Models.Transaction>.Filter;
+            var filter = builder.Where(x => (x.From == address.ToLower() || x.To == address.ToLower()) && x.ShowOnAccountPage);
+            var sort = Builders<Caladan.Models.Transaction>.Sort.Descending("block_number");
+            var transactions = await _transactionRepository.FindAsync(filter, sort, 15, pageNumber == 1 ? 0 : ((pageNumber - 1) * 15));
+
+            var result = transactions.Select(x => new ViewModels.SimpleTransaction()
             {
-                var builder = Builders<Caladan.Models.Transaction>.Filter;
-                var filter = builder.Where(x => (x.From == address.ToLower() || x.To == address.ToLower()) && x.ShowOnAccountPage);
-                var sort = Builders<Caladan.Models.Transaction>.Sort.Descending("block_number");
-                var transactions = await transactionService.FindAsync(filter, sort, 15, pageNumber == 1 ? 0 : ((pageNumber - 1) * 15));
+                BlockNumber = x.BlockNumber,
+                Found = true,
+                From = x.From,
+                Gas = x.Gas,
+                GasPrice = x.GasPrice,
+                To = x.To,
+                TransactionHash = x.TransactionHash,
+                Value = x.Value.FromHexWei(x.Decimals),
+                Symbol = string.IsNullOrEmpty(x.Symbol) ? _configuration["AppSettings:MainCurrencySymbol"] : x.Symbol,
+                Timestamp = x.Timestamp,
+                ConfirmedOnFormatted = x.Created.ToString(),
+                OriginalTransactionHash = x.OriginalTransactionHash
+            });
 
-                var result = transactions.Select(x => new ViewModels.SimpleTransaction()
-                {
-                    BlockNumber = x.BlockNumber,
-                    Found = true,
-                    From = x.From,
-                    Gas = x.Gas,
-                    GasPrice = x.GasPrice,
-                    To = x.To,
-                    TransactionHash = x.TransactionHash,
-                    Value = x.Value.FromHexWei(x.Decimals),
-                    Symbol = string.IsNullOrEmpty(x.Symbol) ? _configuration["AppSettings:MainCurrencySymbol"] : x.Symbol,
-                    Timestamp = x.Timestamp,
-                    ConfirmedOnFormatted = x.Created.ToString(),
-                    OriginalTransactionHash = x.OriginalTransactionHash
-                });
-
-                return Ok(result);
-            }
+            return Ok(result);
         }
-
-
-
     }
 }

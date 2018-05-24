@@ -18,9 +18,16 @@ namespace Caladan.Frontend.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     public class TransactionController : Controller
     {
+        private MongoRepository<Caladan.Models.Transaction> _transactionRepository;
+        private MongoRepository<Caladan.Models.TransactionReceipt> _transactionReceiptRepository;
+        private MongoRepository<Caladan.Models.Block> _blockRepository;
+
         private IConfiguration _configuration;
         private List<string> _nodeUrls;
-        public TransactionController(IConfiguration configuration)
+        public TransactionController(IConfiguration configuration,
+            MongoRepository<Caladan.Models.Transaction> transactionRepository,
+            MongoRepository<Caladan.Models.TransactionReceipt> transactionReceiptRepository,
+            MongoRepository<Caladan.Models.Block> blockRepository)
         {
             _configuration = configuration;
             var nodesCfgValue = configuration["AppSettings:Nodes"];
@@ -28,6 +35,10 @@ namespace Caladan.Frontend.Controllers
                 throw new Exception("Configuration value for 'Nodes' cannot be empty.");
 
             _nodeUrls = nodesCfgValue.Contains(',') ? nodesCfgValue.Split(',').ToList() : new List<string>() { nodesCfgValue };
+
+            _transactionRepository = transactionRepository;
+            _transactionReceiptRepository = transactionReceiptRepository;
+            _blockRepository = blockRepository;
         }
 
         [HttpGet("[action]")]
@@ -35,13 +46,10 @@ namespace Caladan.Frontend.Controllers
         {
             using (var transactionService = new TransactionService(_nodeUrls))
             using (var blockService = new BlockService(_nodeUrls))
-            using (var transactionRepository = new MongoRepository<Caladan.Models.Transaction>())
-            using (var transactionReceiptRepository = new MongoRepository<Caladan.Models.TransactionReceipt>())
-            using (var blockRepository = new MongoRepository<Caladan.Models.Block>())
             {
                 var transactionBuilder = Builders<Caladan.Models.Transaction>.Filter;
                 var transactionFilter = transactionBuilder.Where(x => x.TransactionHash == transactionHash.ToLower());
-                var transactions = await transactionRepository.FindAsync(transactionFilter, null);
+                var transactions = await _transactionRepository.FindAsync(transactionFilter, null);
                 var transaction = transactions.FirstOrDefault();
 
                 if (transaction == null)
@@ -51,13 +59,13 @@ namespace Caladan.Frontend.Controllers
                         return Ok(new ViewModels.Transaction() { Found = false });
                 }
 
-                await GetTransactionReceipt(transactionHash, transactionService, transactionRepository, transactionReceiptRepository, transaction);
+                await GetTransactionReceipt(transactionHash, transactionService, _transactionRepository, _transactionReceiptRepository, transaction);
 
                 ulong confirmations = 0;
                 if (transaction.BlockNumber != 0)
                 {
                     var orderByBlock = Builders<Caladan.Models.Block>.Sort.Descending("block_number");
-                    var lastBlock = await blockRepository.GetAsync(null, orderByBlock);
+                    var lastBlock = await _blockRepository.GetAsync(null, orderByBlock);
 
                     if (lastBlock == null || lastBlock.BlockNumber < transaction.BlockNumber)
                         confirmations = await blockService.GetBlockNumberFromNodeAsync() - transaction.BlockNumber + 1;
@@ -120,28 +128,25 @@ namespace Caladan.Frontend.Controllers
         [HttpGet("[action]")]
         public async Task<IActionResult> GetLatestTransactions(int limit = 50)
         {
-            using (var transactionRepository = new MongoRepository<Caladan.Models.Transaction>())
-            {
-                var builder = Builders<Caladan.Models.Transaction>.Filter;
-                var filter = builder.Where(x => x.ShowOnAccountPage);
-                var orderBy = Builders<Caladan.Models.Transaction>.Sort.Descending("block_number");
-                var dbTransactions = await transactionRepository.FindAsync(filter, orderBy, limit);
+            var builder = Builders<Caladan.Models.Transaction>.Filter;
+            var filter = builder.Where(x => x.ShowOnAccountPage);
+            var orderBy = Builders<Caladan.Models.Transaction>.Sort.Descending("block_number");
+            var dbTransactions = await _transactionRepository.FindAsync(filter, orderBy, limit);
 
-                return Ok(dbTransactions.Select(x => new ViewModels.SimpleTransaction
-                {
-                    BlockNumber = x.BlockNumber,
-                    From = x.From,
-                    Gas = x.Gas,
-                    GasPrice = x.GasPrice,
-                    To = x.To,
-                    TransactionHash = x.TransactionHash,
-                    OriginalTransactionHash = x.OriginalTransactionHash,
-                    Value = x.Value.FromHexWei(x.Decimals),
-                    ConfirmedOnFormatted = x.Created.ToString(),
-                    Found = true,
-                    Symbol = x.Symbol == null ? _configuration["AppSettings:MainCurrencySymbol"] : x.Symbol
-                }));
-            }
+            return Ok(dbTransactions.Select(x => new ViewModels.SimpleTransaction
+            {
+                BlockNumber = x.BlockNumber,
+                From = x.From,
+                Gas = x.Gas,
+                GasPrice = x.GasPrice,
+                To = x.To,
+                TransactionHash = x.TransactionHash,
+                OriginalTransactionHash = x.OriginalTransactionHash,
+                Value = x.Value.FromHexWei(x.Decimals),
+                ConfirmedOnFormatted = x.Created.ToString(),
+                Found = true,
+                Symbol = x.Symbol == null ? _configuration["AppSettings:MainCurrencySymbol"] : x.Symbol
+            }));
         }
 
         [HttpGet("[action]")]
@@ -167,7 +172,7 @@ namespace Caladan.Frontend.Controllers
             }
         }
 
-        private static async Task GetTransactionReceipt(string transactionHash, TransactionService transactionService, MongoRepository<Caladan.Models.Transaction> transactionRepository, 
+        private static async Task GetTransactionReceipt(string transactionHash, TransactionService transactionService, MongoRepository<Caladan.Models.Transaction> transactionRepository,
             MongoRepository<Caladan.Models.TransactionReceipt> transactionReceiptRepository, Caladan.Models.Transaction transaction)
         {
             if (transaction.BlockNumber > 0)

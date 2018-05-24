@@ -6,15 +6,21 @@ using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using Caladan.NodeServices.Web3;
+using Caladan.Repositories;
 
 namespace Caladan.Frontend.Controllers.Api
 {
     [Route("api/[controller]")]
     public class BalanceController : Controller
     {
+        private MongoRepository<Caladan.Models.Transaction> _transactionRepository;
+        private MongoRepository<Caladan.Models.Account> _accountRepository;
+
         private IConfiguration _configuration;
         private List<string> _nodeUrls;
-        public BalanceController(IConfiguration configuration)
+        public BalanceController(IConfiguration configuration,
+            MongoRepository<Caladan.Models.Transaction> transactionRepository,
+            MongoRepository<Caladan.Models.Account> accountRepository)
         {
             _configuration = configuration;
             var nodesCfgValue = configuration["AppSettings:Nodes"];
@@ -36,7 +42,7 @@ namespace Caladan.Frontend.Controllers.Api
         {
             var ipAddress = HttpContext.Connection.RemoteIpAddress.ToString();
 
-            using (var accountService = new AccountService(_nodeUrls))
+            using (var accountService = new AccountService(_nodeUrls, _transactionRepository, _accountRepository))
             {
                 try
                 {
