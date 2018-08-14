@@ -15,16 +15,15 @@ namespace Caladan.Frontend.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     public class BlockController : Controller
     {
+        private IConfiguration _configuration;
         private MongoRepository<Caladan.Models.Transaction> _transactionRepository;
         private MongoRepository<Caladan.Models.Block> _blockRepository;
-
-        private IConfiguration _configuration;
+        
         public BlockController(IConfiguration configuration,
             MongoRepository<Caladan.Models.Transaction> transactionRepository,
             MongoRepository<Caladan.Models.Block> blockRepository)
         {
             _configuration = configuration;
-
             _transactionRepository = transactionRepository;
             _blockRepository = blockRepository;
         }
